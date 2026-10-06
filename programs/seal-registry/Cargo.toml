@@ -1,0 +1,29 @@
+[package]
+name = "seal-registry"
+version = "0.1.0"
+description = "Seal: on-chain audit attestations pinned to a program's deploy slot"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "seal_registry"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = "1.2.0"
+mpl-core = "0.12.1"
+
+[dev-dependencies]
+litesvm = "=0.16.0"
+bincode = "1.3"
+solana-keypair = "3.1.2"
+solana-signer = "3.0.1"
+solana-transaction = "4.1.5"
+solana-account = "4.3.0"

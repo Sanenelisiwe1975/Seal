@@ -1,0 +1,1223 @@
+{
+  "address": "SeaLXkRMwaEx7cWWcUtXyTPcbcvRK1Ma3DA3n6nMoEX",
+  "metadata": {
+    "name": "seal_registry",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Seal: on-chain audit attestations pinned to a program's deploy slot"
+  },
+  "instructions": [
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "issue_attestation",
+      "discriminator": [
+        18,
+        115,
+        85,
+        100,
+        231,
+        31,
+        242,
+        143
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "auditor"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "auditor",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  100,
+                  105,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "attestation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  116,
+                  101,
+                  115,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auditor"
+              },
+              {
+                "kind": "account",
+                "path": "target_program"
+              }
+            ]
+          }
+        },
+        {
+          "name": "target_program"
+        },
+        {
+          "name": "target_programdata"
+        },
+        {
+          "name": "asset",
+          "docs": [
+            "Fresh keypair for the Core certificate."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "collection",
+          "writable": true,
+          "relations": [
+            "auditor"
+          ]
+        },
+        {
+          "name": "cert_owner"
+        },
+        {
+          "name": "mpl_core_program",
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "AttestationParams"
+            }
+          }
+        },
+        {
+          "name": "cert_name",
+          "type": "string"
+        },
+        {
+          "name": "cert_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "register_auditor",
+      "discriminator": [
+        27,
+        109,
+        11,
+        191,
+        172,
+        108,
+        132,
+        71
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "The audit firm's signing key; must sign to prove control."
+          ],
+          "signer": true
+        },
+        {
+          "name": "auditor",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  100,
+                  105,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "collection",
+          "docs": [
+            "Fresh keypair for the auditor's Core collection."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mpl_core_program",
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "uri",
+          "type": "string"
+        },
+        {
+          "name": "collection_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "reissue",
+      "discriminator": [
+        98,
+        69,
+        118,
+        79,
+        3,
+        39,
+        92,
+        247
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "auditor"
+          ]
+        },
+        {
+          "name": "auditor",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  100,
+                  105,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          },
+          "relations": [
+            "attestation"
+          ]
+        },
+        {
+          "name": "attestation",
+          "writable": true
+        },
+        {
+          "name": "target_programdata"
+        },
+        {
+          "name": "asset",
+          "writable": true,
+          "relations": [
+            "attestation"
+          ]
+        },
+        {
+          "name": "collection",
+          "writable": true,
+          "relations": [
+            "auditor"
+          ]
+        },
+        {
+          "name": "mpl_core_program",
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "AttestationParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "revoke",
+      "discriminator": [
+        170,
+        23,
+        31,
+        34,
+        133,
+        173,
+        93,
+        242
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "auditor"
+          ]
+        },
+        {
+          "name": "auditor",
+          "docs": [
+            "Suspended auditors may still revoke their own attestations."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  100,
+                  105,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          },
+          "relations": [
+            "attestation"
+          ]
+        },
+        {
+          "name": "attestation",
+          "writable": true
+        },
+        {
+          "name": "asset",
+          "writable": true,
+          "relations": [
+            "attestation"
+          ]
+        },
+        {
+          "name": "collection",
+          "writable": true,
+          "relations": [
+            "auditor"
+          ]
+        },
+        {
+          "name": "mpl_core_program",
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "reason",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "set_auditor_active",
+      "discriminator": [
+        19,
+        248,
+        232,
+        215,
+        43,
+        66,
+        168,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "auditor",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  100,
+                  105,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auditor.authority",
+                "account": "Auditor"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "active",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "sync_status",
+      "discriminator": [
+        152,
+        156,
+        76,
+        234,
+        130,
+        239,
+        45,
+        245
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "attestation",
+          "writable": true
+        },
+        {
+          "name": "auditor",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  100,
+                  105,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auditor.authority",
+                "account": "Auditor"
+              }
+            ]
+          },
+          "relations": [
+            "attestation"
+          ]
+        },
+        {
+          "name": "target_programdata"
+        },
+        {
+          "name": "asset",
+          "writable": true,
+          "relations": [
+            "attestation"
+          ]
+        },
+        {
+          "name": "collection",
+          "writable": true,
+          "relations": [
+            "auditor"
+          ]
+        },
+        {
+          "name": "mpl_core_program",
+          "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": {
+          "name": "AttestationStatus"
+        }
+      }
+    },
+    {
+      "name": "verify",
+      "discriminator": [
+        133,
+        161,
+        141,
+        48,
+        120,
+        198,
+        88,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "attestation"
+        },
+        {
+          "name": "target_programdata"
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": {
+          "name": "AttestationStatus"
+        }
+      }
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Attestation",
+      "discriminator": [
+        152,
+        125,
+        183,
+        86,
+        36,
+        146,
+        121,
+        73
+      ]
+    },
+    {
+      "name": "Auditor",
+      "discriminator": [
+        163,
+        185,
+        74,
+        35,
+        129,
+        30,
+        235,
+        28
+      ]
+    },
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AttestationIssued",
+      "discriminator": [
+        173,
+        237,
+        90,
+        123,
+        155,
+        224,
+        231,
+        242
+      ]
+    },
+    {
+      "name": "AuditorRegistered",
+      "discriminator": [
+        40,
+        25,
+        104,
+        136,
+        78,
+        146,
+        75,
+        175
+      ]
+    },
+    {
+      "name": "StatusChanged",
+      "discriminator": [
+        146,
+        235,
+        222,
+        125,
+        145,
+        246,
+        34,
+        240
+      ]
+    },
+    {
+      "name": "Verified",
+      "discriminator": [
+        102,
+        108,
+        247,
+        112,
+        212,
+        132,
+        41,
+        71
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Only the config admin can perform this action"
+    },
+    {
+      "code": 6001,
+      "name": "AuditorInactive",
+      "msg": "Auditor is suspended"
+    },
+    {
+      "code": 6002,
+      "name": "StringTooLong",
+      "msg": "String exceeds maximum length"
+    },
+    {
+      "code": 6003,
+      "name": "UnsupportedLoader",
+      "msg": "Target is not a BPF Upgradeable Loader program"
+    },
+    {
+      "code": 6004,
+      "name": "ProgramDataMismatch",
+      "msg": "ProgramData account does not belong to the target program"
+    },
+    {
+      "code": 6005,
+      "name": "ProgramClosed",
+      "msg": "Target program has been closed"
+    },
+    {
+      "code": 6006,
+      "name": "DeploySlotMismatch",
+      "msg": "Live deploy slot does not match expected_deploy_slot"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidCertificateOwner",
+      "msg": "Certificate owner must be the program's upgrade authority"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidExpiry",
+      "msg": "expires_at must be 0 or in the future"
+    },
+    {
+      "code": 6009,
+      "name": "AssetMismatch",
+      "msg": "Certificate asset does not match the attestation"
+    },
+    {
+      "code": 6010,
+      "name": "CollectionMismatch",
+      "msg": "Collection does not match the auditor"
+    },
+    {
+      "code": 6011,
+      "name": "AlreadyRevoked",
+      "msg": "Attestation is already revoked"
+    }
+  ],
+  "types": [
+    {
+      "name": "Attestation",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auditor",
+            "docs": [
+              "Auditor PDA that issued this attestation."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "program",
+            "docs": [
+              "Audited program id."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "programdata",
+            "docs": [
+              "ProgramData account of `program` (loader-v3 PDA)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "asset",
+            "docs": [
+              "Metaplex Core certificate asset."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "deploy_slot",
+            "docs": [
+              "`ProgramData.slot` at issuance. The attestation is only valid while this matches."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "executable_hash",
+            "docs": [
+              "sha256 of the deployed ELF, computed off-chain (informational)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "report_hash",
+            "docs": [
+              "sha256 of the audit report document."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "report_uri",
+            "type": "string"
+          },
+          {
+            "name": "findings",
+            "type": {
+              "defined": {
+                "name": "Findings"
+              }
+            }
+          },
+          {
+            "name": "issued_at",
+            "type": "i64"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "docs": [
+              "0 = never expires."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Last status written on-chain. `verify` always recomputes from live state."
+            ],
+            "type": {
+              "defined": {
+                "name": "AttestationStatus"
+              }
+            }
+          },
+          {
+            "name": "revoke_reason",
+            "type": "u8"
+          },
+          {
+            "name": "version",
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AttestationIssued",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "attestation",
+            "type": "pubkey"
+          },
+          {
+            "name": "auditor",
+            "type": "pubkey"
+          },
+          {
+            "name": "program",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset",
+            "type": "pubkey"
+          },
+          {
+            "name": "deploy_slot",
+            "type": "u64"
+          },
+          {
+            "name": "version",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AttestationParams",
+      "docs": [
+        "Arguments shared by `issue_attestation` and `reissue`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "expected_deploy_slot",
+            "docs": [
+              "Must equal the live `ProgramData.slot`; guards against an upgrade landing",
+              "between the auditor's review and this transaction."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "executable_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "report_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "report_uri",
+            "type": "string"
+          },
+          {
+            "name": "findings",
+            "type": {
+              "defined": {
+                "name": "Findings"
+              }
+            }
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AttestationStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Valid"
+          },
+          {
+            "name": "Stale"
+          },
+          {
+            "name": "Revoked"
+          },
+          {
+            "name": "Expired"
+          },
+          {
+            "name": "ProgramClosed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Auditor",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Signing key of the audit firm."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "collection",
+            "docs": [
+              "Metaplex Core collection holding this auditor's certificates.",
+              "Its update authority is this PDA."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          },
+          {
+            "name": "attestations_issued",
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuditorRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auditor",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "collection",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "auditor_count",
+            "type": "u32"
+          },
+          {
+            "name": "attestation_count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Findings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "critical",
+            "type": "u16"
+          },
+          {
+            "name": "high",
+            "type": "u16"
+          },
+          {
+            "name": "medium",
+            "type": "u16"
+          },
+          {
+            "name": "low",
+            "type": "u16"
+          },
+          {
+            "name": "info",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StatusChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "attestation",
+            "type": "pubkey"
+          },
+          {
+            "name": "program",
+            "type": "pubkey"
+          },
+          {
+            "name": "from",
+            "type": {
+              "defined": {
+                "name": "AttestationStatus"
+              }
+            }
+          },
+          {
+            "name": "to",
+            "type": {
+              "defined": {
+                "name": "AttestationStatus"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Verified",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "attestation",
+            "type": "pubkey"
+          },
+          {
+            "name": "program",
+            "type": "pubkey"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "AttestationStatus"
+              }
+            }
+          },
+          {
+            "name": "pinned_slot",
+            "type": "u64"
+          },
+          {
+            "name": "live_slot",
+            "type": {
+              "option": "u64"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

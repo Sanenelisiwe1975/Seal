@@ -1,0 +1,23 @@
+{
+  "name": "seal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "idl": "anchor idl build -p seal-registry -o idl/seal_registry.json",
+    "generate": "codama run js",
+    "fixtures": "cargo test -p seal-registry --test fixtures",
+    "test:client": "node --import tsx --test tests/client/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@codama/nodes-from-anchor": "^1.5.6",
+    "@codama/renderers-js": "^2.5.0",
+    "@codama/visitors": "^1.11.0",
+    "@solana/kit": "^8.4.0",
+    "@solana/program-client-core": "^8.4.0",
+    "@types/node": "^26.6.4",
+    "codama": "^1.11.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

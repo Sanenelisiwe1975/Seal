@@ -1,0 +1,10 @@
+{
+  "idl": "idl/seal_registry.json",
+  "before": ["./codama/programdata-default.mjs"],
+  "scripts": {
+    "js": {
+      "from": "@codama/renderers-js",
+      "args": ["clients/js"]
+    }
+  }
+}
