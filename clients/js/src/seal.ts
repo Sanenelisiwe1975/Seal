@@ -22,10 +22,19 @@ import {
 import {
   AttestationStatus,
   fetchAttestation,
+  fetchMaybeAttestation,
+  fetchMaybeAuditor,
+  findAttestationPda,
+  findAuditorPda,
   getAttestationStatusDecoder,
   getVerifyInstruction,
   type Attestation,
 } from './generated/index.ts';
+import {
+  fetchVerifiedBuild,
+  type FetchVerifiedBuildOptions,
+  type VerifiedBuild,
+} from './verifiedBuild.ts';
 
 export const BPF_LOADER_UPGRADEABLE = 'BPFLoaderUpgradeab1e11111111111111111111111' as Address;
 
@@ -107,4 +116,143 @@ export async function simulateVerify(
   if (value.err) throw new Error(`verify simulation failed: ${JSON.stringify(value.err)}\n${value.logs?.join('\n')}`);
   if (!value.returnData) throw new Error('verify returned no data');
   return getAttestationStatusDecoder().decode(getBase64Encoder().encode(value.returnData.data[0]));
+}
+
+/**
+ * Parse a loader-v3 `Program` account header: u32 tag (2) | Pubkey programdata_address.
+ * Mirrors the on-chain check that rejects a spoofed ProgramData account.
+ */
+export function parseProgramHeader(data: Uint8Array): Address | null {
+  if (data.length < 36) return null;
+  const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+  if (view.getUint32(0, true) !== 2) return null;
+  return getAddressDecoder().decode(data.subarray(4, 36));
+}
+
+export type PreflightCheckId = 'loader' | 'programdata' | 'auditor' | 'attestation' | 'verifiedBuild';
+
+export type PreflightCheck = {
+  id: PreflightCheckId;
+  label: string;
+  passed: boolean;
+  detail: string;
+  /**
+   * A failed check the auditor may knowingly proceed past. Only the verified-build link is
+   * overridable: the rest are conditions `issue_attestation` itself enforces, so overriding them
+   * would only produce a failed transaction.
+   */
+  overridable: boolean;
+};
+
+export type PreflightResult = {
+  checks: PreflightCheck[];
+  /** Every non-overridable check passed, so the transaction is expected to land. */
+  ok: boolean;
+  /** Live deploy state, i.e. the `expectedDeploySlot` to sign against. */
+  deployState: DeployState | null;
+  programdata: Address;
+  auditorPda: Address;
+  attestationPda: Address;
+  /** Set when this auditor already attested to this program: the flow must reissue, not issue. */
+  existing: Attestation | null;
+  verifiedBuild: VerifiedBuild | null;
+};
+
+/**
+ * Everything `issue_attestation` will check, checked first so the auditor sees why a program
+ * cannot be attested instead of a failed simulation. Each returned check maps to one program
+ * error: UnsupportedLoader, ProgramDataMismatch / ProgramClosed, AuditorInactive.
+ */
+export async function preflightIssue(
+  rpc: Rpc<GetAccountInfoApi>,
+  input: { program: Address; auditorAuthority: Address },
+  options: { verifiedBuild?: FetchVerifiedBuildOptions | false } = {},
+): Promise<PreflightResult> {
+  const { program, auditorAuthority } = input;
+  const [programdata, [auditorPda]] = await Promise.all([
+    findProgramDataAddress(program),
+    findAuditorPda({ authority: auditorAuthority }),
+  ]);
+  const [attestationPda] = await findAttestationPda({ auditor: auditorPda, targetProgram: program });
+
+  const [programAccount, deployState, auditor, existingAccount, verifiedBuild] = await Promise.all([
+    rpc.getAccountInfo(program, { encoding: 'base64', dataSlice: { offset: 0, length: 36 } }).send(),
+    fetchDeployState(rpc, program),
+    fetchMaybeAuditor(rpc, auditorPda),
+    fetchMaybeAttestation(rpc, attestationPda),
+    options.verifiedBuild === false
+      ? Promise.resolve(null)
+      : fetchVerifiedBuild(program, options.verifiedBuild).catch(() => null),
+  ]);
+
+  const checks: PreflightCheck[] = [];
+  const programValue = programAccount.value;
+  const declaredProgramdata = programValue
+    ? parseProgramHeader(new Uint8Array(getBase64Encoder().encode(programValue.data[0])))
+    : null;
+
+  if (!programValue) {
+    checks.push(check('loader', 'Upgradeable program', false, 'No account exists at this address.'));
+  } else if (programValue.owner !== BPF_LOADER_UPGRADEABLE) {
+    checks.push(
+      check('loader', 'Upgradeable program', false, `Owned by ${programValue.owner}, not the BPF Upgradeable Loader.`),
+    );
+  } else if (declaredProgramdata !== programdata) {
+    checks.push(
+      check('loader', 'Upgradeable program', false, `Program points at ${declaredProgramdata ?? 'no ProgramData'}, not its loader PDA.`),
+    );
+  } else {
+    checks.push(check('loader', 'Upgradeable program', true, 'Owned by the BPF Upgradeable Loader (loader v3).'));
+  }
+
+  checks.push(
+    deployState
+      ? check('programdata', 'ProgramData readable', true, `Deployed at slot ${deployState.slot}.`)
+      : check('programdata', 'ProgramData readable', false, 'ProgramData is closed or not a loader-v3 account.'),
+  );
+
+  if (!auditor.exists) {
+    checks.push(check('auditor', 'Registered auditor', false, 'This wallet is not a registered Seal auditor.'));
+  } else if (!auditor.data.active) {
+    checks.push(check('auditor', 'Registered auditor', false, `${auditor.data.name} is suspended and cannot issue.`));
+  } else {
+    checks.push(check('auditor', 'Registered auditor', true, `${auditor.data.name}, active.`));
+  }
+
+  const existing = existingAccount.exists ? existingAccount.data : null;
+  checks.push(
+    existing
+      ? check('attestation', 'No live attestation', false, `Version ${existing.version} already exists; reissue instead.`)
+      : check('attestation', 'No live attestation', true, 'This auditor has not attested to this program.'),
+  );
+
+  if (options.verifiedBuild !== false) {
+    const commit = verifiedBuild?.commit;
+    checks.push({
+      ...check(
+        'verifiedBuild',
+        'Verified build',
+        verifiedBuild?.verified === true,
+        verifiedBuild?.verified === true
+          ? `Verified against ${verifiedBuild.repoUrl ?? 'source'}${commit ? ` at ${commit.slice(0, 7)}` : ''}.`
+          : 'No OtterSec verified build, so the attestation cannot name an audited commit.',
+      ),
+      overridable: true,
+    });
+  }
+
+  return {
+    checks,
+    ok: checks.every((c) => c.passed || c.overridable),
+    deployState,
+    programdata,
+    auditorPda,
+    attestationPda,
+    existing,
+    verifiedBuild,
+  };
+}
+
+function check(id: PreflightCheckId, label: string, passed: boolean, detail: string): PreflightCheck {
+  return { id, label, passed, detail, overridable: false };
 }

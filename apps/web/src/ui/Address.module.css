@@ -1,0 +1,52 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.value {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 1px var(--space-1);
+  margin-left: calc(var(--space-1) * -1);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95em;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.value:hover {
+  background: var(--surface-hover);
+}
+
+.copied {
+  color: var(--status-valid-fg);
+}
+
+.confirmation {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--status-valid-fg);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-tertiary);
+}
+
+.link:hover {
+  color: var(--accent);
+}
+
+.full {
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}

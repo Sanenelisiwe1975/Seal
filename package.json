@@ -7,7 +7,10 @@
     "generate": "codama run js",
     "fixtures": "cargo test -p seal-registry --test fixtures",
     "test:client": "node --import tsx --test tests/client/*.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev": "npm run dev -w @seal/web",
+    "build:web": "npm run build -w @seal/web",
+    "test:web": "npm run test -w @seal/web"
   },
   "devDependencies": {
     "@codama/nodes-from-anchor": "^1.5.6",
@@ -19,5 +22,9 @@
     "codama": "^1.11.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
-  }
+  },
+  "workspaces": [
+    "clients/js",
+    "apps/web"
+  ]
 }

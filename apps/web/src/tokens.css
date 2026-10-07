@@ -1,0 +1,165 @@
+/*
+ * The only place colour, type, spacing, radius and motion values are defined.
+ * Components consume these variables and never hard-code a value.
+ *
+ * `data-theme` is always present on <html>: a pre-paint script in index.html resolves
+ * `prefers-color-scheme` (and any stored override) before first paint, so the dark values live in
+ * exactly one block instead of being duplicated across a media query and an attribute selector.
+ */
+
+:root {
+  /* Type ------------------------------------------------------------------ */
+  --font-sans:
+    'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  --text-xs: 0.6875rem; /* 11px — eyebrow labels, meta */
+  --text-sm: 0.78125rem; /* 12.5px — secondary text, dense cells */
+  --text-base: 0.875rem; /* 14px — body, table cells */
+  --text-md: 0.9375rem; /* 15px — emphasised body */
+  --text-lg: 1.0625rem; /* 17px — card titles */
+  --text-xl: 1.25rem; /* 20px — section headings */
+  --text-2xl: 1.5rem; /* 24px — page titles */
+  --text-3xl: 2rem; /* 32px — the status line */
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.5;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --tracking-wide: 0.06em; /* eyebrow labels only */
+
+  /* Spacing — 4px base --------------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radius --------------------------------------------------------------- */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+  --radius-full: 999px;
+
+  /* Layout --------------------------------------------------------------- */
+  --width-page: 1120px;
+  --width-prose: 68ch;
+  --border-width: 1px;
+
+  /* Motion — state changes only ------------------------------------------ */
+  --motion-fast: 120ms;
+  --motion-base: 160ms;
+  --motion-slow: 200ms;
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Light palette -------------------------------------------------------- */
+  --bg: #fbfbfc;
+  --bg-sunken: #f3f4f6;
+  --surface: #ffffff;
+  --surface-subtle: #f7f8f9;
+  --surface-hover: #f1f3f5;
+
+  --border: #e4e6ea;
+  --border-strong: #ccd1d8;
+  --border-focus: #2050b3;
+
+  --text: #16181d;
+  --text-secondary: #566070;
+  --text-tertiary: #79818f;
+  --text-inverse: #ffffff;
+
+  --accent: #2050b3;
+  --accent-hover: #1a4296;
+  --accent-subtle: #eef2fb;
+
+  --status-valid-fg: #0b6540;
+  --status-valid-bg: #e9f5ee;
+  --status-valid-border: #b1dac2;
+
+  --status-stale-fg: #825000;
+  --status-stale-bg: #fdf3e2;
+  --status-stale-border: #e7cd9b;
+
+  --status-revoked-fg: #a41f26;
+  --status-revoked-bg: #fdecec;
+  --status-revoked-border: #eebfc0;
+
+  --status-expired-fg: #4b5463;
+  --status-expired-bg: #eff1f4;
+  --status-expired-border: #d3d7de;
+
+  --status-closed-fg: #2b303a;
+  --status-closed-bg: #e6e8ec;
+  --status-closed-border: #c5c9d1;
+
+  --severity-critical: #a41f26;
+  --severity-high: #ad4e0b;
+  --severity-medium: #825000;
+  --severity-low: #44546a;
+  --severity-info: #697080;
+
+  --shadow-popover: 0 1px 2px rgba(16, 18, 22, 0.08), 0 8px 24px rgba(16, 18, 22, 0.1);
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #0e1014;
+  --bg-sunken: #090b0e;
+  --surface: #15181d;
+  --surface-subtle: #1a1e24;
+  --surface-hover: #1f242b;
+
+  --border: #272c34;
+  --border-strong: #3b424d;
+  --border-focus: #7ba3ec;
+
+  --text: #e9ebef;
+  --text-secondary: #a4adbb;
+  --text-tertiary: #7c8593;
+  --text-inverse: #0e1014;
+
+  --accent: #7ba3ec;
+  --accent-hover: #9cbcf4;
+  --accent-subtle: #172030;
+
+  --status-valid-fg: #5ed69a;
+  --status-valid-bg: #11241b;
+  --status-valid-border: #27503a;
+
+  --status-stale-fg: #e8b254;
+  --status-stale-bg: #261c0c;
+  --status-stale-border: #55411a;
+
+  --status-revoked-fg: #f08a8a;
+  --status-revoked-bg: #2a1416;
+  --status-revoked-border: #5c2b2d;
+
+  --status-expired-fg: #b0b8c4;
+  --status-expired-bg: #1d2127;
+  --status-expired-border: #363d47;
+
+  --status-closed-fg: #ccd3dd;
+  --status-closed-bg: #22262d;
+  --status-closed-border: #3d444f;
+
+  --severity-critical: #f08a8a;
+  --severity-high: #e8a06a;
+  --severity-medium: #e8b254;
+  --severity-low: #a3b6ce;
+  --severity-info: #98a0af;
+
+  --shadow-popover: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  color-scheme: dark;
+}

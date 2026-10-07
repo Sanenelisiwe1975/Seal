@@ -1,0 +1,75 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: var(--border-width) solid;
+  border-radius: var(--radius-full);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sm {
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-1);
+  font-size: var(--text-sm);
+  gap: var(--space-1);
+}
+
+.md {
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+  font-size: var(--text-base);
+}
+
+.lg {
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
+  font-size: var(--text-xl);
+  border-radius: var(--radius-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.valid {
+  color: var(--status-valid-fg);
+  background: var(--status-valid-bg);
+  border-color: var(--status-valid-border);
+}
+
+.stale {
+  color: var(--status-stale-fg);
+  background: var(--status-stale-bg);
+  border-color: var(--status-stale-border);
+}
+
+.revoked {
+  color: var(--status-revoked-fg);
+  background: var(--status-revoked-bg);
+  border-color: var(--status-revoked-border);
+}
+
+.expired {
+  color: var(--status-expired-fg);
+  background: var(--status-expired-bg);
+  border-color: var(--status-expired-border);
+}
+
+.closed {
+  color: var(--status-closed-fg);
+  background: var(--status-closed-bg);
+  border-color: var(--status-closed-border);
+}
+
+/* The status flip is the one moment that earns motion. */
+.flipped {
+  animation: flip var(--motion-slow) var(--ease-out);
+}
+
+@keyframes flip {
+  from {
+    transform: translateY(-2px);
+    opacity: 0.4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
