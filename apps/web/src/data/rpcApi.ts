@@ -48,6 +48,7 @@ import type {
   StatusChange,
 } from './types';
 import { decodeCoreAssetHeader, registryAttributes } from './coreAsset';
+import { decorateProgramError } from '../lib/errors';
 
 /** Byte offsets into the Attestation account, used for server-side `getProgramAccounts` filters. */
 const OFFSET_AUDITOR = 8;
@@ -99,8 +100,13 @@ export function createRpcApi(rpc: SealRpc, rpcSubscriptions: SealRpcSubscription
       (m) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, m),
       (m) => appendTransactionMessageInstruction(instruction, m),
     );
-    const signature = await signAndSendTransactionMessageWithSigners(message);
-    return { signature: getBase58Decoder().decode(signature) };
+    try {
+      const signature = await signAndSendTransactionMessageWithSigners(message);
+      return { signature: getBase58Decoder().decode(signature) };
+    } catch (error) {
+      // The message is in hand here, so a Seal error can be decoded to its real meaning.
+      throw decorateProgramError(error, message);
+    }
   }
 
   function requireSigner(session: AuditorSession): TransactionSendingSigner {

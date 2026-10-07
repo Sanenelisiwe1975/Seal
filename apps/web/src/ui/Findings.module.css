@@ -1,0 +1,63 @@
+.findings {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 1px var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--surface-subtle);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+.zero {
+  color: var(--text-tertiary);
+}
+
+.severity {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.value {
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.critical .severity,
+.critical .value {
+  color: var(--severity-critical);
+}
+
+.high .severity,
+.high .value {
+  color: var(--severity-high);
+}
+
+.medium .severity,
+.medium .value {
+  color: var(--severity-medium);
+}
+
+.low .severity,
+.low .value {
+  color: var(--severity-low);
+}
+
+.info .severity,
+.info .value {
+  color: var(--severity-info);
+}
+
+.clean {
+  font-size: var(--text-sm);
+  color: var(--status-valid-fg);
+}

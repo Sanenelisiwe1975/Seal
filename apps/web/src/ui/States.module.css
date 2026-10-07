@@ -1,0 +1,59 @@
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.inline {
+  padding: var(--space-4);
+}
+
+.title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+}
+
+.body {
+  max-width: var(--width-prose);
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+}
+
+.error {
+  border-color: var(--status-revoked-border);
+  background: var(--status-revoked-bg);
+}
+
+.error .title {
+  color: var(--status-revoked-fg);
+}
+
+.error .body {
+  color: var(--status-revoked-fg);
+}
+
+/* The verbatim RPC or program error, kept readable but clearly machine text. */
+.detail {
+  width: 100%;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--status-revoked-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
