@@ -19,7 +19,7 @@ fn hex8(bytes: &[u8; 32]) -> String {
     s
 }
 
-/// On-chain attributes mirrored onto the certificate for wallets and explorers.
+/// Onchain attributes mirrored onto the certificate for wallets and explorers.
 pub fn attributes_for(att: &Attestation) -> Plugin {
     let kv = |k: &str, v: String| Attribute { key: k.to_string(), value: v };
     Plugin::Attributes(Attributes {
