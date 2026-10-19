@@ -14,7 +14,7 @@ pub mod state;
 use instructions::*;
 use state::{AttestationParams, AttestationStatus};
 
-declare_id!("SeaLXkRMwaEx7cWWcUtXyTPcbcvRK1Ma3DA3n6nMoEX");
+declare_id!("BVT2xmRBJwruzmYctRCiQSkdCzJX8aM6Z8UtjsQAnGSg");
 
 #[program]
 pub mod seal_registry {

@@ -5,18 +5,28 @@ anchor_version = "1.2.0"
 resolution = true
 skip-lint = false
 
-[programs.localnet]
-seal_registry = "SeaLXkRMwaEx7cWWcUtXyTPcbcvRK1Ma3DA3n6nMoEX"
-
 [programs.devnet]
 seal_registry = "SeaLXkRMwaEx7cWWcUtXyTPcbcvRK1Ma3DA3n6nMoEX"
+
+[programs.localnet]
+seal_registry = "BVT2xmRBJwruzmYctRCiQSkdCzJX8aM6Z8UtjsQAnGSg"
 
 [provider]
 cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
+[hooks]
+
+[test]
+startup_wait = 30000
+shutdown_wait = 2000
+upgradeable = false
+
 [test.validator]
+bind_address = "127.0.0.1"
 url = "https://api.mainnet-beta.solana.com"
+ledger = ".anchor/test-ledger"
+rpc_port = 8899
 
 [[test.validator.clone]]
 address = "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
